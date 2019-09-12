@@ -7,7 +7,7 @@ var constant = require('./config/constants');
 
 
 var port = process.env.PORT || 8042;
-var mongoose = require('mongoose');
+//var mongoose = require('mongoose');
 var passport = require('passport');
 var flash = require('connect-flash');
 var path = require('path');
@@ -22,14 +22,6 @@ var now = new Date();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
-
-
-/***************Mongodb configuratrion********************/
-var mongoose = require('mongoose');
-var configDB = require('./config/database.js');
-//configuration ===============================================================
-mongoose.connect(configDB.url); // connect to our database
-
 
 require('./config/passport')(passport); // pass passport for configuration
 

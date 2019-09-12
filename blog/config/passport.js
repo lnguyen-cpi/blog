@@ -10,6 +10,12 @@ var dateFormat = require('dateformat');
 var fs = require('fs');
 
 var bcrypt = require('bcrypt-nodejs');
+var mysql = require('mysql')
+
+const dbconfig = require('./database');
+const connection = mysql.createConnection(dbconfig.connection);
+// select database - very important
+connection.query(`USE ${dbconfig.database}`);
 
 
 //expose this function to our app using module.exports
