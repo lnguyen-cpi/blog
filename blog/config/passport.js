@@ -9,7 +9,6 @@ var constant = require('../config/constants');
 var dateFormat = require('dateformat');
 var fs = require('fs');
 
-var bcrypt = require('bcrypt-nodejs');
 var mysql = require('mysql')
 
 const dbconfig = require('./database');
@@ -19,7 +18,7 @@ connection.query(`USE ${dbconfig.database}`);
 
 
 //expose this function to our app using module.exports
-module.exports = function(passport) {
+module.exports = function(passport, app) {
 
     // =========================================================================
     // passport session setup ==================================================
@@ -34,8 +33,8 @@ module.exports = function(passport) {
 
     // used to deserialize the user
     passport.deserializeUser(function(id, done) {
-        User.findById(id, function(err, user) {
-            done(err, user);
+        connection.query("SELECT * FROM users WHERE id = ? ",[id], function(err, rows){
+            done(err, rows[0]);
         });
     });
 
@@ -47,78 +46,36 @@ module.exports = function(passport) {
 
     passport.use('local-signup', new LocalStrategy({
         // by default, local strategy uses username and password, we will override with email
-        usernameField : 'email',
+        usernameField : 'username',
         passwordField : 'password',
         passReqToCallback : true // allows us to pass back the entire request to the callback
     },
-    function(req, email, password, done) {
-        // asynchronous
-        // User.findOne wont fire unless data is sent back
-        process.nextTick(function() {
-
+    function(req, username, password, done) {
         // find a user whose email is the same as the forms email
         // we are checking to see if the user trying to login already exists
-        User.findOne({ 'mail' :  email }, function(err, user) {
-            // if there are any errors, return the error
+        connection.query("SELECT * FROM users WHERE username = ?",[username], function(err, rows) {
             if (err)
                 return done(err);
-
-            // check to see if theres already a user with that email
-            if (user) {
-                return done(null, false, req.flash('error', 'That email is already taken.'));
+            if (rows.length) {
+                return done(null, false, req.flash('signupMessage', 'That username is already taken.'));
             } else {
-            	
-            	
-           User.find().sort([['_id', 'descending']]).limit(1).exec(function(err, userdata) {	
-
-        	   
-                // if there is no user with that email
+                // if there is no user with that username
                 // create the user
-                var newUser            = new User();
+                var newUserMysql = {
+                    username: username,
+                    password: bcrypt.hashSync(password, 10)  // use the generateHash function in our user model
+                    //password: password
+                };
+                var insertQuery = "INSERT INTO users ( username, password ) values (?,?)";
+                connection.query(insertQuery,[newUserMysql.username, newUserMysql.password],function(err, rows) {
+                    newUserMysql.id = rows.insertId;
 
-                // set the user's local credentials
-                
-           	  var day =dateFormat(Date.now(), "yyyy-mm-dd HH:MM:ss");
-           	 
-           	  var active_code=bcrypt.hashSync(Math.floor((Math.random() * 99999999) *54), null, null);
-           	 
-               
-                    newUser.mail    = email;
-                    newUser.password = newUser.generateHash(password);
-                    newUser.name = req.body.username;
-                    newUser.created_date = day;
-                    newUser.updated_date = day;
-                    newUser.status = 'active'; //inactive for email actiavators
-                    newUser.active_hash = active_code;
-                    newUser._id = userdata[0]._id+1;
-
-
-                // save the user
-                newUser.save(function(err) {
-                    if (err)
-                        throw err;
-
-                  /*  var email            = require('../lib/email.js');
-                    email.activate_email(req.body.username,req.body.email,active_code);
-                                        return done(null, newUser,req.flash('success', 'Account Created Successfully,Please Check Your Email For Account Confirmation.'));
-                    */
-                    return done(null, newUser,req.flash('success', 'Account Created Successfully'));
-                    
-                    req.session.destroy();
-                
-                });
-                
-              });
-           
-                
-            }
-
-        });    
-
-        });
-
-        
-    }));
+                    return done(null, newUserMysql);
+                    });
+                }
+            });
+        })
+    );
     
     
     // =========================================================================
@@ -129,47 +86,34 @@ module.exports = function(passport) {
     
     passport.use('local-login', new LocalStrategy({
         // by default, local strategy uses username and password, we will override with email
-        usernameField : 'email',
+        usernameField : 'username',
         passwordField : 'password',
         passReqToCallback : true // allows us to pass back the entire request to the callback
     },
-    function(req, email, password, done) { // callback with email and password from our form
+    function(req, username, password, done) {
+            connection.query("SELECT * FROM users WHERE username = ? AND status = 1",[username], function(err, rows){
+                if (err)
+                    return done(err);
+                if (!rows.length) {
+                    return done(null, false, req.flash('loginMessage', 'No user found.')); // req.flash is the way to set flashdata using connect-flash
+                }
 
-    	
-    	
-        // find a user whose email is the same as the forms email
-        // we are checking to see if the user trying to login already exists
-        User.findOne({ 'mail' :  email }, function(err, user) {
-            // if there are any errors, return the error before anything else
-            
-            if (err)
-            return done(null, false, req.flash('error', err)); // req.flash is the way to set flashdata using connect-flash
-
-
-            // if no user is found, return the message
-            if (!user)
-                return done(null, false, req.flash('error', 'Sorry Your Account Not Exits ,Please Create Account.')); // req.flash is the way to set flashdata using connect-flash
-
-            
-            
-            // if the user is found but the password is wrong
-            if (!user.validPassword(password))
-                return done(null, false, req.flash('error', 'Email and Password Does Not Match.')); // create the loginMessage and save it to session as flashdata
-
-            if(user.status === 'inactive')
-             return done(null, false, req.flash('error', 'Your Account Not Activated ,Please Check Your Email')); // create the loginMessage and save it to session as flashdata
-            
-            
-            // all is well, return successful user
-            req.session.user = user;
-		
-            return done(null, user);
-        });
-
-    }));
-
+                // if the user is found but the password is wrong
+                if (!bcrypt.compareSync(password, rows[0].password)) {
+                //if(password == rows[0].password) {
+                    return done(null, false, req.flash('loginMessage', 'Oops! Wrong password.')); // create the loginMessage and save it to session as flashdata
+                }
+                // save data user in sesssion
+                req.session.user = rows[0].username;
+                req.session.id   = rows[0].id;
+                req.session.role = rows[0].role;
+                // all is well, return successful user
+                app.locals.usernameGolbal = rows[0].username;
+                return done(null, rows[0]);
+            });
+        })
+    );
 };
-
     
     
 

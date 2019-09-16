@@ -7,7 +7,6 @@ var constant = require('./config/constants');
 
 
 var port = process.env.PORT || 8042;
-//var mongoose = require('mongoose');
 var passport = require('passport');
 var flash = require('connect-flash');
 var path = require('path');
@@ -23,7 +22,6 @@ var now = new Date();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
-require('./config/passport')(passport); // pass passport for configuration
 
 //set up our express application
 app.use(morgan('dev')); // log every request to the console
@@ -52,6 +50,9 @@ app.use(flash()); // use connect-flash for flash messages stored in session
 
 // routes ======================================================================
 require('./config/routes.js')(app, passport); // load our routes and pass in our app and fully configured passport
+
+// passport ======================================================================
+require('./config/passport.js')(passport, app)
 
 
 //launch ======================================================================
