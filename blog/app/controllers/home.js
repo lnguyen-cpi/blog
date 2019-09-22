@@ -11,19 +11,18 @@ exports.loggedIn = function(req, res, next)
 	} else {
 
 		res.redirect('/login');
-
 	}
-
+	next();
 }
 
 exports.home = function(req, res) {
 	
 	
-	res.render('home.ejs', {
+	res.render('index.ejs', {
+		title : "Blog",
 		error : req.flash("error"),
 		success: req.flash("success"),
 		session:req.session,
-	
 	 });
 	 
 }

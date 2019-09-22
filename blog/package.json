@@ -5,7 +5,9 @@
   "dependencies": {
     "async": "latest",
     "basic-auth-connect": "latest",
+    "bcrypt": "^3.0.6",
     "bcrypt-nodejs": "0.0.3",
+    "bcryptjs": "^2.4.3",
     "body-parser": "~1.13.2",
     "client-sessions": "latest",
     "connect": "latest",
