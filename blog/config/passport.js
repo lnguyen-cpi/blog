@@ -2,7 +2,7 @@ var LocalStrategy   = require('passport-local').Strategy;
 
 var User            = require('../app/models/home');
 
-var bcrypt = require('bcrypt-nodejs');
+var bcrypt = require('bcryptjs');
 
 var configAuth = require('./auth.js');
 var constant = require('../config/constants');
@@ -28,7 +28,7 @@ module.exports = function(passport, app) {
 
     // used to serialize the user for the session
     passport.serializeUser(function(user, done) {
-        done(null, user);
+        done(null, user.id);
     });
 
     // used to deserialize the user
@@ -64,7 +64,6 @@ module.exports = function(passport, app) {
                 var newUserMysql = {
                     username: username,
                     password: bcrypt.hashSync(password, 10)  // use the generateHash function in our user model
-                    //password: password
                 };
                 var insertQuery = "INSERT INTO users ( username, password ) values (?,?)";
                 connection.query(insertQuery,[newUserMysql.username, newUserMysql.password],function(err, rows) {
@@ -92,6 +91,7 @@ module.exports = function(passport, app) {
     },
     function(req, username, password, done) {
             connection.query("SELECT * FROM users WHERE username = ? AND status = 1",[username], function(err, rows){
+                // console.log(rows);
                 if (err)
                     return done(err);
                 if (!rows.length) {
@@ -100,15 +100,18 @@ module.exports = function(passport, app) {
 
                 // if the user is found but the password is wrong
                 if (!bcrypt.compareSync(password, rows[0].password)) {
-                //if(password == rows[0].password) {
+                    console.log('Inside');
                     return done(null, false, req.flash('loginMessage', 'Oops! Wrong password.')); // create the loginMessage and save it to session as flashdata
                 }
                 // save data user in sesssion
                 req.session.user = rows[0].username;
                 req.session.id   = rows[0].id;
                 req.session.role = rows[0].role;
+
                 // all is well, return successful user
                 app.locals.usernameGolbal = rows[0].username;
+
+                console.log('Done');
                 return done(null, rows[0]);
             });
         })
