@@ -54,6 +54,8 @@ module.exports = function(passport, app) {
         // find a user whose email is the same as the forms email
         // we are checking to see if the user trying to login already exists
         connection.query("SELECT * FROM users WHERE username = ?",[username], function(err, rows) {
+            console.log(username);
+            console.log(rows);
             if (err)
                 return done(err);
             if (rows.length) {
@@ -67,6 +69,7 @@ module.exports = function(passport, app) {
                 };
                 var insertQuery = "INSERT INTO users ( username, password ) values (?,?)";
                 connection.query(insertQuery,[newUserMysql.username, newUserMysql.password],function(err, rows) {
+                    console.log(rows);
                     newUserMysql.id = rows.insertId;
 
                     return done(null, newUserMysql);
