@@ -3,21 +3,32 @@ var home = require("../app/controllers/home");
 
 
 module.exports = function(app, passport) {
-
-  
+    console.log("here");
          // =====================================
          // HOME PAGE (with login links) ========
          // =====================================
-         app.get('/', home.home);
+         app.get('/home', home.home);
  
          // =====================================
          // LOGIN ===============================
          // =====================================
          // show the login form
-         app.get('/login', passport.authenticate('local-login', 
-                { successRedirect: '/',
-                  failureRedirect: '/login' 
-         }));
+         app.get('/login', home.login);
+
+        // process the login form
+		app.post('/login', passport.authenticate('local-login', {
+            successRedirect : 'home', // redirect to the secure profile section
+            failureRedirect : 'login', // redirect back to the signup page if there is an error
+            failureFlash : true // allow flash messages
+        }),
+            function(req, res) {
+                if (req.body.remember) {
+                    req.session.cookie.maxAge = 1000 * 60 * 3;
+                } else {
+                    req.session.cookie.expires = false;
+                }
+            res.redirect('/');
+        });
  
          // =====================================
          // SIGNUP ==============================
