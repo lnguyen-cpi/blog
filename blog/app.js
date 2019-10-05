@@ -1,4 +1,5 @@
 var express = require('express');
+require('express-group-routes');
 
 var app = express();
 var multer = require('multer')
@@ -37,16 +38,15 @@ app.use(cookieParser()); // read cookies (needed for auth)
 
 //view engine setup
 app.use(express.static(path.join(__dirname, 'public')));
-app.set('views', path.join(__dirname, 'app/views'));
+app.set('views', [path.join(__dirname, 'app/views'), path.join(__dirname, 'frontend/views')]);
+
 // use ejs-blocks for all ejs templates:
 app.engine('ejs', engine);
 app.set('view engine', 'ejs');
-//app.set('view engine', 'ejs'); // set up ejs for templating
+
 
 
 //required for passport
-//app.use(session({ secret: 'iloveyoudear...' })); // session secret
-
 app.use(session({
     secret: 'I Love India...',
     resave: true,
@@ -58,12 +58,9 @@ app.use(passport.session()); // persistent login sessions
 app.use(flash()); // use connect-flash for flash messages stored in session
 
 
-
-
-
 // routes ======================================================================
-require('./routes/web')(app, passport); // load our routes and pass in our app and fully configured passport
-
+require('./routes/web')(app, passport);      // load our routes related to Admin
+require('./routes/frontEnd')(app, passport)  // load our routes related to Users
 
 //launch ======================================================================
 app.listen(port);

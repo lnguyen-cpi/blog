@@ -93,7 +93,6 @@ module.exports = function(passport, app) {
     },
     function(req, username, password, done) {
             connection.query("SELECT * FROM users WHERE username = ? AND status = 1",[username], function(err, rows){
-                // console.log(rows);
                 if (err)
                     return done(err);
                 if (!rows.length) {
@@ -112,8 +111,7 @@ module.exports = function(passport, app) {
 
                 // all is well, return successful user
                 app.locals.usernameGolbal = rows[0].username;
-
-                console.log('Done');
+ 
                 return done(null, rows[0]);
             });
         })
