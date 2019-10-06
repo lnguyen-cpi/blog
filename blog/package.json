@@ -20,6 +20,7 @@
     "express": "~4.13.1",
     "express-group-routes": "^1.1.0",
     "express-mailer": "^0.3.0",
+    "express-mysql-session": "^2.1.0",
     "express-session": "latest",
     "fs-extra": "latest",
     "http-proxy": "latest",
