@@ -5,7 +5,7 @@ var k = 0 ;
 function change(){
   if(k%2 == 0 ){
     head.innerHTML = text1 ; 
-   head.style.cssText ="animation: typing-1 5s steps(200, end) infinite , blink-caret .65s step-end infinite ; "
+   head.style.cssText ="animation: typing-1 5s steps(300, end) infinite , blink-caret .65s step-end infinite ; "
    
   }
   else {

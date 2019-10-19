@@ -16,16 +16,56 @@ var morgan = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
+const MySQLStore = require('express-mysql-session')(session);
 var bodyParser = require('body-parser');
 var dateFormat = require('dateformat');
 var now = new Date();
 var engine = require('ejs-blocks');
 
+const options = {
+        // Host name for database connection:
+        host: 'https://www.db4free.net',
+        // Port number for database connection:
+        port: 3306,
+        // Database user:
+        user: 'nblam1994',
+        // Password for the above database user:
+        password: 'nblam1994',
+        // Database name:
+        database: 'personal_blog',
+        // Whether or not to automatically check for and clear expired sessions:
+        clearExpired: true,
+        // How frequently expired sessions will be cleared; milliseconds:
+        checkExpirationInterval: 900000,
+        // The maximum age of a valid session; milliseconds:
+        expiration: 86400000,
+        // Whether or not to create the sessions database table, if one does not already exist:
+        createDatabaseTable: true,
+        // Number of connections when creating a connection pool:
+        connectionLimit: 1,
+        // Whether or not to end the database connection when the store is closed.
+        // The default value of this option depends on whether or not a connection was passed to the constructor.
+        // If a connection object is passed to the constructor, the default value for this option is false.
+        endConnectionOnClose: true,
+        charset: 'utf8mb4_bin',
+        schema: {
+            tableName: 'sessions',
+            columnNames: {
+                session_id: 'session_id',
+                expires: 'expires',
+                data: 'data'
+            }
+        }
+};
+
+const sessionStore = new MySQLStore(options);
 
 
 
-// passport ======================================================================
+
+// passport for admin ======================================================================
 require('./config/passport')(passport, app);
+require('./config/passportFrontend')(passport, app);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -50,7 +90,8 @@ app.set('view engine', 'ejs');
 app.use(session({
     secret: 'I Love India...',
     resave: true,
-    saveUninitialized: true
+    saveUninitialized: true,
+    store: sessionStore
 }));
 
 app.use(passport.initialize());

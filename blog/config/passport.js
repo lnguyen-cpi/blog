@@ -20,6 +20,8 @@ connection.query(`USE ${dbconfig.database}`);
 //expose this function to our app using module.exports
 module.exports = function(passport, app) {
 
+    
+    
     // =========================================================================
     // passport session setup ==================================================
     // =========================================================================
@@ -54,8 +56,6 @@ module.exports = function(passport, app) {
         // find a user whose email is the same as the forms email
         // we are checking to see if the user trying to login already exists
         connection.query("SELECT * FROM users WHERE username = ?",[username], function(err, rows) {
-            console.log(username);
-            console.log(rows);
             if (err)
                 return done(err);
             if (rows.length) {
@@ -108,6 +108,7 @@ module.exports = function(passport, app) {
                 req.session.user = rows[0].username;
                 req.session.id   = rows[0].id;
                 req.session.role = rows[0].role;
+                req.session.name = rows[0].name;
 
                 // all is well, return successful user
                 app.locals.usernameGolbal = rows[0].username;
@@ -117,6 +118,29 @@ module.exports = function(passport, app) {
         })
     );
 };
+
+
+
+module.exports.SetAdminName = async () => {
+
+    // Can not save into session
+    return new Promise((resolve, reject) =>{
+        connection.query("SELECT * FROM admin", function(err, rows) {
+            if (err) {
+                console.log(err);
+                reject(err);
+                return;
+            }
+            if (!rows.length) {
+                    console.log("no admin");
+                    resolve("no admin")
+                    return;
+            } else {
+                resolve(rows[0].name);
+            }
+        });
+    });
+}
     
     
 
