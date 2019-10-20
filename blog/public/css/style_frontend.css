@@ -651,25 +651,21 @@ white-space: nowrap;
 
 
  @keyframes typing-1 {
-   
-   
-  0% { width: 0 }
-   50%{width:325px}
-   60%{
-     width:325px;
-   }
-   70%{
-     width:325px;
-   }
-   80%{
-     width:325px;
-   }
-   90%{
-     width:325px;
-   }
-   100%{width:0}
-   
-   
+          0% { width: 0 }
+          50%{width:375px}
+          60%{
+            width:375px;
+          }
+          70%{
+            width:375px;
+          }
+          80%{
+            width:375px;
+          }
+          90%{
+            width:375px;
+          }
+          100%{width:0}
    }
 @keyframes typing-2 {
    

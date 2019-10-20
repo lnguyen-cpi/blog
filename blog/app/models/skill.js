@@ -31,20 +31,32 @@ exports.insertSkill = (dataInsert) => {
     });
 }
 
-exports.GetAll = () => {
+exports.GetAll = (keyword = '') => {
 
     return new Promise((resolve, reject) => {
+        if(keyword.length > 0){
+            let selectQuery = "SELECT * FROM skills WHERE name_skill LIKE ? OR level_skill LIKE ?";
+            connection.query(selectQuery, [keyword, keyword],  function(err, rows) {
 
-        let selectQuery = "SELECT * FROM skills";
-        connection.query(selectQuery, [],  function(err, rows) {
+                if(err) {
+                    reject(resultsCallback(err, null));
+                }
+                else {
+                    resolve(resultsCallback(null, rows))
+                }
+            });
+        } else {
+            let selectQuery = "SELECT * FROM skills";
+            connection.query(selectQuery, [],  function(err, rows) {
 
-            if(err) {
-                reject(resultsCallback(err, null));
-            }
-            else {
-                resolve(resultsCallback(null, rows))
-            }
-        })
+                if(err) {
+                    reject(resultsCallback(err, null));
+                }
+                else {
+                    resolve(resultsCallback(null, rows))
+                }
+            });
+        }
     });
 }
 
@@ -86,12 +98,12 @@ exports.deactiveSkill = (dataInsert) => {
     return new Promise((resolve, reject) => {
 
         let editQuery = "UPDATE skills SET status = ?, updated_at = ? WHERE id = ?";
-        connection.query(editQuery, dataInsert, function(err, rows) {
+        connection.query(editQuery, dataInsert, function(err) {
             if(err){
                 console.log(err);
-                reject(resultsCallback(err, null));
+                reject(resultsCallback(err, false));
             } else {
-                resolve(resultsCallback(null, rows.changedRows))
+                resolve(resultsCallback(null, true))
             }
         });
     });

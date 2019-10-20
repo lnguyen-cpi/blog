@@ -1,24 +1,43 @@
 
 var skillModel = require('../models/skill');
 var moment = require('moment');
+var paginate = require('express-paginate');
 
 exports.index = async function(req, res) {
-    let listSkills = null;
-    await skillModel.GetAll().then( (data) => {
 
+
+    let listSkills = null;
+    let keyword = req.query.keyword;
+    let limit = req.query.limit;
+    let pageCount = 0;
+    let page = req.query.page || 1;
+
+    console.log(paginate);
+   
+    await skillModel.GetAll(keyword).then( (data) => {
         listSkills = data;
+        pageCount = Math.ceil(listSkills.length / limit);
     })
+
+
     res.render('skills/index', {
         messageInsert: req.flash('success'),
-        listSkills: listSkills
+        listSkills: listSkills,
+        keyword: keyword,
+        pageCount: pageCount,
+        page: req.query.page || 1,
+        pages: paginate.getArrayPages(req)(3, pageCount, page),
+        paginate: paginate,
+        limit: limit
     });
 }
 
 
 exports.add = async function(req, res) {
+    let errorData = req.flash("error");
 
     res.render('skills/add', {
-        message: req.flash("error"),
+        message: errorData,
         errorInsert: req.flash("errorInsert")
     });
 }
@@ -26,20 +45,18 @@ exports.add = async function(req, res) {
 exports.edit = async function(req, res) {
 
     let id = req.params.id;
-    let skillName = null;
-    let skillLevel = null;
+    let infoSkill = null;
 
     if (id) {
-
         await skillModel.getbyId(id).then( (row) => {
-            skillName = row.name_skill;
-            skillLevel = row.level_skill;
+            infoSkill = row;
         });
     }
     
     res.render('skills/edit', {
-        skillName: skillName,
-        skillLevel: skillLevel,
+        // skillName: skillName,
+        // skillLevel: skillLevel,
+        info: infoSkill,
         id : id
     });
 }
@@ -48,7 +65,8 @@ exports.handleEdit = async function(req, res) {
 
     let name = req.body.nameSkill;
     let level = req.body.levelSkill;
-    let id = req.body.id; 
+    let id = req.params.id; 
+    let status = req.body.statusSkill;
 
     if (name && level) {
        
@@ -58,7 +76,7 @@ exports.handleEdit = async function(req, res) {
         let dataInsert = [
             name,
             level,
-            1,
+            status,
             updateDate,
             id
         ];
@@ -86,7 +104,12 @@ exports.handle = async function(req, res) {
     let name = req.body.nameSkill;
     let level = req.body.levelSkill;
 
-    if (name && level) {
+    req.checkBody('nameSkill', 'nameSkill is required and not longer than 200 chars').notEmpty().isLength({ max: 200 });
+    req.checkBody('levelSkill','nameSkill is required and numeric type').notEmpty().isNumeric();
+
+    let errors = req.validationErrors();
+
+    if (!errors) {
         // add data in database
         let createDate = moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
         let updateDate = null;
@@ -111,8 +134,37 @@ exports.handle = async function(req, res) {
         }
     }
     else {
-        req.flash('error', 'Name and Level can not be blank');
+        req.flash('error', errors);
         res.redirect("/admin/skill/add");
+    }
+}
+
+
+exports.deacitveSkill = async (req, res) => {
+    let id = req.body.id;
+    id = Number.parseInt(id);
+    if(id > 0){
+        // thuc hien viec update du lieu
+        let updateDate = moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
+        let dataInsert = [
+            0,
+            updateDate,
+            id
+        ];
+
+        await skillModel.deactiveSkill(dataInsert).then((flagDelete) => {
+            editSucessful = flagDelete;
+        });
+
+        if(editSucessful){
+            res.send("ok");
+
+        } else {
+            res.send("fail");
+        }
+
+    } else {
+        res.send('error');
     }
 }
 
