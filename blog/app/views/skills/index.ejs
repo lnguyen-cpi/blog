@@ -1,6 +1,8 @@
 
 <% layout('../master') -%>
 
+<% script('/js/delete-skill.js') -%>
+
 <!-- Breadcrumb-->
 <ol class="breadcrumb">
     <li class="breadcrumb-item">Home</li>
@@ -29,7 +31,20 @@
                     <%= messageInsert %>
                 </div>
             <% } %>
-            <a class="btn btn-primary btn-lg" href="/admin/skill/add">Add Skill</a>
+            <div class="row">
+                <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                    <a class="btn btn-primary btn-lg" href="/admin/skill/add">Add Skiil</a>
+                </div>
+                <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control js-keyword" value="<%= !keyword  ? '' : keyword  %>" >
+                        <div class="input-group-append">
+                            <span class="input-group-text js-search-skill" id="basic-addon2">Search</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
             <table class="table my-3 ">
                 <thead>
                     <tr>
@@ -41,26 +56,45 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <% listSkills.forEach(function(item) { %>
-                        <tr>
-                            <td><%= item.id%></td>
-                            <td><%= item.name_skill%></td>
-                            <td>
-                                <div class="progress">
-                                    <div class="progress-bar bg-success" role="progressbar" style="width: <%=item.level_skill%>%" aria-valuenow="<%=item.level_skill%>" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-                            </td>
-                            <td><%= item.status == 1 ? 'Active' : 'Deactive' %></td>
-                            <td>
-                                <a href="/admin/skill/edit/<%=item.id%>" class="btn btn-info">Edit</a>
-                            </td>
-                            <td>
-                                <a href="/admin/skill/deactivate/<%= item.id%>" class="btn btn-danger">Delete</a>
-                            </td>
-                        </tr>
+                    <% listSkills.forEach(function(item, index) { %>
+                        <% if( (page - 1) * limit <= index && index < page * limit ) { %>
+                            <tr>
+                                <td><%= item.id%></td>
+                                <td><%= item.name_skill%></td>
+                                <td>
+                                    <div class="progress">
+                                        <div class="progress-bar bg-success" role="progressbar" style="width: <%=item.level_skill%>%" aria-valuenow="<%=item.level_skill%>" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </td>
+                                <td><%= item.status == 1 ? 'Active' : 'Deactive' %></td>
+                                <td>
+                                    <a href="/admin/skill/edit/<%=item.id%>" class="btn btn-info">Edit</a>
+                                </td>
+                                <td>
+                                    <button id="<%= item.id %>" class="btn btn-danger js-delete-skill">Delete</button>
+                                </td>
+                            </tr>
+                        <% } %>
                     <% }) %>
                 </tbody>
             </table>
         </div>
     </div>
+    <% if (paginate.hasPreviousPages || paginate.hasNextPages(pageCount)) { %>
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                <% if (paginate.hasPreviousPages) { %>
+                    <li class="page-item"><a class="page-link" href="<%=paginate.href(true)%>">Previous</a></li>
+                <% } %>
+                <% pages.forEach(function(page) { %>
+                    <li class="page-item">
+                        <a class="page-link" href="<%=page.url%>" > <%=page.number%> </a>
+                    </li>
+                <% }) %>
+                <% if (paginate.hasNextPages(pageCount)) {%>
+                    <li class="page-item"><a class="page-link" href="<%=paginate.href()%>">Next</a></li>
+                <% } %>
+            </ul>
+        </nav>
+    <% } %>
 </div>

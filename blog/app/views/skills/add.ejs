@@ -24,10 +24,10 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-            <% if(message.length > 0) { %>
-                <div class="alert alert-danger" role="alert">
-                    <%= message %>
-                </div>
+            <% if(message) { %>
+                <% for(let i = 0; i < message.length; i++) { %>
+                <p class="alert alert-danger"><%= message[i].msg %></p>
+                <% } %>
             <% } %>
             <a class="btn btn-primary btn-lg" href="/admin/skill">My Skill</a>
             <form action="/admin/handle-add-skill" method="post" class="my-3 p-3 border">

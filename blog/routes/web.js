@@ -1,9 +1,13 @@
 var home = require("../app/controllers/home");
 var user = require("../app/controllers/user");
 var skill = require("../app/controllers/skills");
+// var paginate = require('express-paginate');
 
 
 module.exports = function(app, passport) {
+
+    // keep this before all routes that will use pagination
+    //app.use(paginate.middleware(10, 50));
     
     app.group("/admin", (app) => {
         app.get('/*', (req, res, next) => {
@@ -24,9 +28,10 @@ module.exports = function(app, passport) {
         app.post('/handle-add-skill', isLoggedIn, skill.handle);
 
         app.get('/skill/edit/:id', isLoggedIn, skill.edit);
-        app.post('/skill/edit', isLoggedIn, skill.handleEdit);
+        app.post('/skill/edit/:id', isLoggedIn, skill.handleEdit);
 
         app.get('/skill/deactivate/:id', isLoggedIn, skill.deacitve);
+        app.post('/skill/deactive-skill', isLoggedIn, skill.deacitveSkill);
 
         // show the login form
         app.get('/login', home.login);

@@ -21,6 +21,12 @@ var bodyParser = require('body-parser');
 var dateFormat = require('dateformat');
 var now = new Date();
 var engine = require('ejs-blocks');
+var expressValidator = require('express-validator');
+var paginate = require('express-paginate');
+
+
+// keep this before all routes that will use pagination
+app.use(paginate.middleware(5, 50));
 
 const options = {
         // Host name for database connection:
@@ -75,6 +81,8 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(morgan('dev')); // log every request to the console
 app.use(cookieParser()); // read cookies (needed for auth)
 //app.use(bodyParser()); // get information from html forms
+app.use(expressValidator());
+
 
 //view engine setup
 app.use(express.static(path.join(__dirname, 'public')));
@@ -100,7 +108,7 @@ app.use(flash()); // use connect-flash for flash messages stored in session
 
 
 // routes ======================================================================
-require('./routes/web')(app, passport);      // load our routes related to Admin
+require('./routes/web')(app, passport, paginate);      // load our routes related to Admin
 require('./routes/frontEnd')(app, passport)  // load our routes related to Users
 
 //launch ======================================================================
