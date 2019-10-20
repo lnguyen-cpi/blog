@@ -1,5 +1,6 @@
 var home = require("../app/controllers/home");
 var user = require("../app/controllers/user");
+var skill = require("../app/controllers/skills");
 
 
 module.exports = function(app, passport) {
@@ -14,11 +15,26 @@ module.exports = function(app, passport) {
         app.get("/home", isLoggedIn, home.home);
         app.get('/user',isLoggedIn,  user.index);
 
+
+        // manage skills
+        app.get('/skill', isLoggedIn, skill.index);
+
+        app.get('/skill/add', isLoggedIn, skill.add);
+
+        app.post('/handle-add-skill', isLoggedIn, skill.handle);
+
+        app.get('/skill/edit/:id', isLoggedIn, skill.edit);
+        app.post('/skill/edit', isLoggedIn, skill.handleEdit);
+
+        app.get('/skill/deactivate/:id', isLoggedIn, skill.deacitve);
+
         // show the login form
         app.get('/login', home.login);
 
         // show update form
         app.get('/update', home.update);
+
+      
     });
 
     // process the login form
@@ -57,6 +73,7 @@ module.exports = function(app, passport) {
         req.session.destroy(); // delete session in database
         res.redirect('admin/login');
     });
+
  };
  
 // route middleware to make sure

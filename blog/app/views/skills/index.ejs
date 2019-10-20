@@ -1,0 +1,66 @@
+
+<% layout('../master') -%>
+
+<!-- Breadcrumb-->
+<ol class="breadcrumb">
+    <li class="breadcrumb-item">Home</li>
+    <li class="breadcrumb-item">
+    <a href="#">Admin</a>
+    </li>
+    <li class="breadcrumb-item active">Skills</li>
+    <!-- Breadcrumb Menu-->
+    <li class="breadcrumb-menu d-md-down-none">
+    <div class="btn-group" role="group" aria-label="Button group">
+        <a class="btn" href="#">
+        <i class="icon-speech"></i>
+        </a>
+        <a class="btn" href="./">
+        <i class="icon-graph"></i>Skills</a>
+        <a class="btn" href="#">
+        <i class="icon-settings"></i>  Settings</a>
+    </div>
+    </li>
+</ol>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+            <% if(messageInsert.length > 0) { %>
+                <div class="alert alert-success my-3" role="alert">
+                    <%= messageInsert %>
+                </div>
+            <% } %>
+            <a class="btn btn-primary btn-lg" href="/admin/skill/add">Add Skill</a>
+            <table class="table my-3 ">
+                <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>Name skill</th>
+                        <th>Level skill</th>
+                        <th>Status</th>
+                        <th colspan="2" width="5%">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% listSkills.forEach(function(item) { %>
+                        <tr>
+                            <td><%= item.id%></td>
+                            <td><%= item.name_skill%></td>
+                            <td>
+                                <div class="progress">
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: <%=item.level_skill%>%" aria-valuenow="<%=item.level_skill%>" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </td>
+                            <td><%= item.status == 1 ? 'Active' : 'Deactive' %></td>
+                            <td>
+                                <a href="/admin/skill/edit/<%=item.id%>" class="btn btn-info">Edit</a>
+                            </td>
+                            <td>
+                                <a href="/admin/skill/deactivate/<%= item.id%>" class="btn btn-danger">Delete</a>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
