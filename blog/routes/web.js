@@ -1,6 +1,7 @@
 var home = require("../app/controllers/home");
 var user = require("../app/controllers/user");
 var skill = require("../app/controllers/skills");
+var socket = require("../app/controllers/socket");
 // var paginate = require('express-paginate');
 
 
@@ -38,6 +39,9 @@ module.exports = function(app, passport) {
 
         // show update form
         app.get('/update', home.update);
+
+        app.get('/socket',isLoggedIn, socket.socket);
+        app.get('/socket/receive',isLoggedIn, socket.receive);
 
       
     });

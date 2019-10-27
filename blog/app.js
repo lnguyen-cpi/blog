@@ -2,6 +2,10 @@ var express = require('express');
 require('express-group-routes');
 
 var app = express();
+
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
+
 var multer = require('multer')
 var constants = require('constants');
 var constant = require('./config/constants');
@@ -23,6 +27,7 @@ var now = new Date();
 var engine = require('ejs-blocks');
 var expressValidator = require('express-validator');
 var paginate = require('express-paginate');
+
 
 
 // keep this before all routes that will use pagination
@@ -105,14 +110,17 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 app.use(flash()); // use connect-flash for flash messages stored in session
-
+app.use(function(req, res, next){
+    res.io = io;
+    next();
+})
 
 // routes ======================================================================
 require('./routes/web')(app, passport, paginate);      // load our routes related to Admin
 require('./routes/frontEnd')(app, passport)  // load our routes related to Users
 
 //launch ======================================================================
-app.listen(port);
+server.listen(port);
 console.log('The magic happens on port ' + port);
 
 //catch 404 and forward to error handler
