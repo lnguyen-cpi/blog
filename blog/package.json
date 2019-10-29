@@ -5,7 +5,9 @@
   "dependencies": {
     "async": "latest",
     "basic-auth-connect": "latest",
+    "bcrypt": "^3.0.6",
     "bcrypt-nodejs": "0.0.3",
+    "bcryptjs": "^2.4.3",
     "body-parser": "~1.13.2",
     "client-sessions": "latest",
     "connect": "latest",
@@ -14,9 +16,14 @@
     "dateformat": "latest",
     "debug": "~2.2.0",
     "ejs": "~2.3.3",
+    "ejs-blocks": "^0.1.4",
     "express": "~4.13.1",
+    "express-group-routes": "^1.1.0",
     "express-mailer": "^0.3.0",
+    "express-mysql-session": "^2.1.0",
+    "express-paginate": "^1.0.0",
     "express-session": "latest",
+    "express-validator": "^5.2.0",
     "fs-extra": "latest",
     "http-proxy": "latest",
     "md5": "latest",
@@ -36,6 +43,8 @@
     "request": "latest",
     "serve-favicon": "~2.3.0",
     "simple-encryptor": "latest",
+    "socket.io": "^2.3.0",
+    "socket.io-client": "^2.3.0",
     "underscore": "latest"
   }
 }

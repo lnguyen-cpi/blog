@@ -1,7 +1,6 @@
-var numeral = require('numeral');
-var bcrypt = require('bcrypt-nodejs');
-var dateFormat = require('dateformat');
+var homeModel = require('../models/home');
 
+/*
 exports.loggedIn = function(req, res, next)
 {
 	if (req.session.user) { // req.session.passport._id
@@ -10,21 +9,27 @@ exports.loggedIn = function(req, res, next)
 
 	} else {
 
-		res.redirect('/login');
-
+		res.redirect('/admin/login');
 	}
-
+	next();
 }
+*/
 
-exports.home = function(req, res) {
-	
-	
-	res.render('home.ejs', {
+exports.home = async function(req, res) {
+
+	let dta = [];
+	 await homeModel.getCategories().then((dt) => {
+		data =dt;
+	});
+
+	res.render('home/index', {
+		title : "",
 		error : req.flash("error"),
 		success: req.flash("success"),
 		session:req.session,
-	
 	 });
+
+
 	 
 }
 
@@ -32,11 +37,8 @@ exports.home = function(req, res) {
 exports.signup = function(req, res) {
 
 	if (req.session.user) {
-
 		res.redirect('/home');
-
 	} else {
-
 		res.render('signup', {
 			error : req.flash("error"),
 			success: req.flash("success"),
@@ -50,7 +52,6 @@ exports.signup = function(req, res) {
 exports.login = function(req, res) {
 
 
-	
 	if (req.session.user) {
 
 		res.redirect('/home');
@@ -65,6 +66,12 @@ exports.login = function(req, res) {
 
 	}
 	
+}
+
+
+exports.update = function(req, res) {
+
+	res.render('update');
 }
 
 

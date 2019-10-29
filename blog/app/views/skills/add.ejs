@@ -1,0 +1,46 @@
+
+<% layout('../master') -%>
+
+<!-- Breadcrumb-->
+<ol class="breadcrumb">
+    <li class="breadcrumb-item">Home</li>
+    <li class="breadcrumb-item">
+    <a href="#">Admin</a>
+    </li>
+    <li class="breadcrumb-item active">Skills</li>
+    <!-- Breadcrumb Menu-->
+    <li class="breadcrumb-menu d-md-down-none">
+    <div class="btn-group" role="group" aria-label="Button group">
+        <a class="btn" href="#">
+        <i class="icon-speech"></i>
+        </a>
+        <a class="btn" href="./">
+        <i class="icon-graph"></i>Skills</a>
+        <a class="btn" href="#">
+        <i class="icon-settings"></i> Add skill</a>
+    </div>
+    </li>
+</ol>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+            <% if(message) { %>
+                <% for(let i = 0; i < message.length; i++) { %>
+                <p class="alert alert-danger"><%= message[i].msg %></p>
+                <% } %>
+            <% } %>
+            <a class="btn btn-primary btn-lg" href="/admin/skill">My Skill</a>
+            <form action="/admin/handle-add-skill" method="post" class="my-3 p-3 border">
+                <div class="form-group">
+                  <label for="nameSkill">Name skill</label>
+                  <input type="text" class="form-control" id="nameSkill" name="nameSkill">
+                </div>
+                <div class="form-group">
+                  <label for="levelSkill">Level skill</label>
+                  <input type="number" class="form-control" id="levelSkill" name="levelSkill">
+                </div>
+                <button type="submit" class="btn btn-primary" name="btnAdd">Submit</button>
+              </form>
+        </div>
+    </div>
+</div>

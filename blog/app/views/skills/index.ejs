@@ -1,0 +1,100 @@
+
+<% layout('../master') -%>
+
+<% script('/js/delete-skill.js') -%>
+
+<!-- Breadcrumb-->
+<ol class="breadcrumb">
+    <li class="breadcrumb-item">Home</li>
+    <li class="breadcrumb-item">
+    <a href="#">Admin</a>
+    </li>
+    <li class="breadcrumb-item active">Skills</li>
+    <!-- Breadcrumb Menu-->
+    <li class="breadcrumb-menu d-md-down-none">
+    <div class="btn-group" role="group" aria-label="Button group">
+        <a class="btn" href="#">
+        <i class="icon-speech"></i>
+        </a>
+        <a class="btn" href="./">
+        <i class="icon-graph"></i>Skills</a>
+        <a class="btn" href="#">
+        <i class="icon-settings"></i>  Settings</a>
+    </div>
+    </li>
+</ol>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+            <% if(messageInsert.length > 0) { %>
+                <div class="alert alert-success my-3" role="alert">
+                    <%= messageInsert %>
+                </div>
+            <% } %>
+            <div class="row">
+                <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                    <a class="btn btn-primary btn-lg" href="/admin/skill/add">Add Skiil</a>
+                </div>
+                <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control js-keyword" value="<%= !keyword  ? '' : keyword  %>" >
+                        <div class="input-group-append">
+                            <span class="input-group-text js-search-skill" id="basic-addon2">Search</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <table class="table my-3 ">
+                <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>Name skill</th>
+                        <th>Level skill</th>
+                        <th>Status</th>
+                        <th colspan="2" width="5%">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% listSkills.forEach(function(item, index) { %>
+                        <% if( (page - 1) * limit <= index && index < page * limit ) { %>
+                            <tr>
+                                <td><%= item.id%></td>
+                                <td><%= item.name_skill%></td>
+                                <td>
+                                    <div class="progress">
+                                        <div class="progress-bar bg-success" role="progressbar" style="width: <%=item.level_skill%>%" aria-valuenow="<%=item.level_skill%>" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </td>
+                                <td><%= item.status == 1 ? 'Active' : 'Deactive' %></td>
+                                <td>
+                                    <a href="/admin/skill/edit/<%=item.id%>" class="btn btn-info">Edit</a>
+                                </td>
+                                <td>
+                                    <button id="<%= item.id %>" class="btn btn-danger js-delete-skill">Delete</button>
+                                </td>
+                            </tr>
+                        <% } %>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <% if (paginate.hasPreviousPages || paginate.hasNextPages(pageCount)) { %>
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                <% if (paginate.hasPreviousPages) { %>
+                    <li class="page-item"><a class="page-link" href="<%=paginate.href(true)%>">Previous</a></li>
+                <% } %>
+                <% pages.forEach(function(page) { %>
+                    <li class="page-item">
+                        <a class="page-link" href="<%=page.url%>" > <%=page.number%> </a>
+                    </li>
+                <% }) %>
+                <% if (paginate.hasNextPages(pageCount)) {%>
+                    <li class="page-item"><a class="page-link" href="<%=paginate.href()%>">Next</a></li>
+                <% } %>
+            </ul>
+        </nav>
+    <% } %>
+</div>
