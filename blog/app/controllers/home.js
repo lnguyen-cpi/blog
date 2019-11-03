@@ -17,9 +17,9 @@ exports.loggedIn = function(req, res, next)
 
 exports.home = async function(req, res) {
 
-	let dta = [];
+	let data = [];
 	 await homeModel.getCategories().then((dt) => {
-		data =dt;
+		data = dt;
 	});
 
 	res.render('home/index', {
@@ -28,9 +28,6 @@ exports.home = async function(req, res) {
 		success: req.flash("success"),
 		session:req.session,
 	 });
-
-
-	 
 }
 
 
@@ -51,21 +48,15 @@ exports.signup = function(req, res) {
 
 exports.login = function(req, res) {
 
-
 	if (req.session.user) {
-
 		res.redirect('/home');
-
 	} else {
-
 		res.render('login', {
 			error : req.flash("error"),
 			success: req.flash("success"),
 			session:req.session
 		});
-
 	}
-	
 }
 
 

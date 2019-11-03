@@ -11,8 +11,6 @@ exports.index = async function(req, res) {
     let limit = req.query.limit;
     let pageCount = 0;
     let page = req.query.page || 1;
-
-    console.log(paginate);
    
     await skillModel.GetAll(keyword).then( (data) => {
         listSkills = data;
@@ -54,8 +52,6 @@ exports.edit = async function(req, res) {
     }
     
     res.render('skills/edit', {
-        // skillName: skillName,
-        // skillLevel: skillLevel,
         info: infoSkill,
         id : id
     });
@@ -83,6 +79,7 @@ exports.handleEdit = async function(req, res) {
         await skillModel.editSkill(dataInsert).then((changedRow) => {
             editSucessful = changedRow;
         });
+
         if(editSucessful){
             req.flash('success', 'Edit successfully !');
             res.redirect("/admin/skill");

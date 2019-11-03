@@ -1,0 +1,45 @@
+<% layout('../master') -%>
+
+
+<!-- Breadcrumb-->
+<ol class="breadcrumb">
+    <li class="breadcrumb-item">Home</li>
+    <li class="breadcrumb-item">
+    <a href="#">Admin</a>
+    </li>
+    <li class="breadcrumb-item active">Skills</li>
+    <!-- Breadcrumb Menu-->
+    <li class="breadcrumb-menu d-md-down-none">
+    <div class="btn-group" role="group" aria-label="Button group">
+        <a class="btn" href="#">
+        <i class="icon-speech"></i>
+        </a>
+        <a class="btn" href="./">
+        <i class="icon-graph"></i>Skills</a>
+        <a class="btn" href="#">
+        <i class="icon-settings"></i>  Settings</a>
+    </div>
+    </li>
+</ol><!-- Breadcrumb-->
+
+<div class="container-fluid">   
+    <div class="row">
+        <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+            <h3>Socket</h3>
+        
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" id="text-data">
+                <div class="input-group-append">
+                    <span class="input-group-text" id="send-data">Send</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                    <div id="mess-data"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<% script('/js/chat-socket.js') -%>

@@ -1,0 +1,38 @@
+
+<% layout('../master') -%>
+
+<!-- Breadcrumb-->
+<ol class="breadcrumb">
+    <li class="breadcrumb-item">Home</li>
+    <li class="breadcrumb-item">
+    <a href="#">Admin</a>
+    </li>
+    <li class="breadcrumb-item active">About</li>
+    <!-- Breadcrumb Menu-->
+    <li class="breadcrumb-menu d-md-down-none">
+    <div class="btn-group" role="group" aria-label="Button group">
+        <a class="btn" href="#">
+        <i class="icon-speech"></i>
+        </a>
+        <a class="btn" href="./">
+        <i class="icon-graph"></i>About</a>
+        <a class="btn" href="#">
+        <i class="icon-settings"></i>Save About</a>
+    </div>
+    </li>
+</ol>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+            <!-- <a class="btn btn-primary btn-lg" href="/admin/skill">About</a> -->
+            <form action="/admin/about/edit/<%= about.id %>" method="post" class="my-3 p-3 border">
+                <div class="form-group">
+                  <label for="nameSkill">Content</label>
+                  <input type="text" class="form-control" id="about" name="about" value="<%= about.Content%>">
+                </div>
+                <button type="submit" class="btn btn-primary" name="btnAdd">Edit</button>
+            </form>
+        </div>
+    </div>
+</div>

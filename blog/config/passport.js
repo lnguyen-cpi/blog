@@ -101,7 +101,6 @@ module.exports = function(passport, app) {
 
                 // if the user is found but the password is wrong
                 if (!bcrypt.compareSync(password, rows[0].password)) {
-                    console.log('Inside');
                     return done(null, false, req.flash('loginMessage', 'Oops! Wrong password.')); // create the loginMessage and save it to session as flashdata
                 }
                 // save data user in sesssion
@@ -127,16 +126,92 @@ module.exports.SetAdminName = async () => {
     return new Promise((resolve, reject) =>{
         connection.query("SELECT * FROM admin", function(err, rows) {
             if (err) {
-                console.log(err);
                 reject(err);
                 return;
             }
+
             if (!rows.length) {
-                    console.log("no admin");
-                    resolve("no admin")
-                    return;
+                resolve("no admin")
+                return;
             } else {
                 resolve(rows[0].name);
+            }
+        });
+    });
+}
+
+module.exports.GetSkills = async () => {
+
+
+    return new Promise((resolve, reject) =>{
+        connection.query("SELECT * FROM skills", function(err, rows) {
+
+            if (err) {
+                console.log(err);
+                reject(null);
+            }
+
+            if (rows.length) {
+                resolve(rows);
+            } else {
+                resolve(null);
+            }
+        });
+    });
+}
+
+module.exports.GetAbout = async () => {
+
+    return new Promise((resolve, reject) =>{
+        connection.query("SELECT * FROM about", function(err, rows) {
+
+            if (err) {
+                console.log(err);
+                reject(null);
+            }
+
+            if (rows.length) {
+                resolve(rows[0]);
+            } else {
+                resolve(null);
+            }
+        });
+    });
+}
+
+module.exports.GetExperience = async () => {
+
+    return new Promise((resolve, reject) =>{
+        connection.query("SELECT * FROM experience", function(err, rows) {
+
+            if (err) {
+                console.log(err);
+                reject(null);
+            }
+
+            if (rows.length) {
+                resolve(rows);
+            } else {
+                resolve(null);
+            }
+        });
+    });
+}
+
+module.exports.GetEducation = async () => {
+
+    return new Promise((resolve, reject) =>{
+        connection.query("SELECT * FROM education", function(err, rows) {
+
+            if (err) {
+                console.log(err);
+                reject(null);
+            }
+
+            if (rows.length) {
+                resolve(rows);
+            } else {
+                resolve(null);
             }
         });
     });
