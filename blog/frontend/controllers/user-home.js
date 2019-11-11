@@ -7,15 +7,40 @@ var passportAdmin = require('../../config/passport');
 
 exports.home = async function(req, res) {
 	
+
+	let skills = [];
+	let about = "";
+	let experiences = [];
+	let education = [];
+
 	if(!req.session.adminName){
 		req.session.adminName = await passportAdmin.SetAdminName();
 	}
 
+	await passportAdmin.GetSkills().then((rows)=>{
+		skills = rows;
+	});
+
+	await passportAdmin.GetAbout().then((data) => {
+		about = data.Content;
+	});
+
+	await passportAdmin.GetExperience().then((data) => {
+		experiences = data;
+	});
+
+	await passportAdmin.GetEducation().then((data) => {
+		education = data;
+	});
+
+
+
 	res.render('user-index.ejs', {
 		name :  req.session.adminName,
-		error :  req.flash("error"),
-		success: req.flash("success"),
-		session: req.session,
+		skills: skills,
+		about: about,
+		experiences: experiences,
+		education: education
 	 });
 }
 

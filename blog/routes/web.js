@@ -2,13 +2,12 @@ var home = require("../app/controllers/home");
 var user = require("../app/controllers/user");
 var skill = require("../app/controllers/skills");
 var socket = require("../app/controllers/socket");
-// var paginate = require('express-paginate');
+var about = require("../app/controllers/about");
 
 
 module.exports = function(app, passport) {
 
     // keep this before all routes that will use pagination
-    //app.use(paginate.middleware(10, 50));
     
     app.group("/admin", (app) => {
         app.get('/*', (req, res, next) => {
@@ -17,22 +16,23 @@ module.exports = function(app, passport) {
             }
             next();
         });
+        
         app.get("/home", isLoggedIn, home.home);
         app.get('/user',isLoggedIn,  user.index);
 
 
         // manage skills
         app.get('/skill', isLoggedIn, skill.index);
-
         app.get('/skill/add', isLoggedIn, skill.add);
-
         app.post('/handle-add-skill', isLoggedIn, skill.handle);
-
         app.get('/skill/edit/:id', isLoggedIn, skill.edit);
         app.post('/skill/edit/:id', isLoggedIn, skill.handleEdit);
-
         app.get('/skill/deactivate/:id', isLoggedIn, skill.deacitve);
         app.post('/skill/deactive-skill', isLoggedIn, skill.deacitveSkill);
+
+        // manage profile
+        app.get('/about', isLoggedIn, about.index);
+        app.post('/about/edit/:id', isLoggedIn, about.edit);
 
         // show the login form
         app.get('/login', home.login);
@@ -40,10 +40,9 @@ module.exports = function(app, passport) {
         // show update form
         app.get('/update', home.update);
 
+        // socket-io
         app.get('/socket',isLoggedIn, socket.socket);
-        app.get('/socket/receive',isLoggedIn, socket.receive);
 
-      
     });
 
     // process the login form
